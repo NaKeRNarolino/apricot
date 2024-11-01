@@ -1,1 +1,1 @@
-# A simple `egui` wrapper
+# A simple, Flutter inspired `egui` wrapper

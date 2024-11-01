@@ -39,3 +39,9 @@ impl Into<Color32> for Color {
         Color32::from_rgba_unmultiplied(self.red, self.green, self.blue, self.alpha)
     }
 }
+
+#[derive(Clone, PartialEq)]
+pub enum Orientation {
+    Vertical,
+    Horizontal,
+}

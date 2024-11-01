@@ -1,10 +1,18 @@
-use eframe::egui::{self, vec2, Align, Layout, RichText, Style};
+use std::sync::Arc;
 
-use crate::misc::Color;
+use eframe::egui::{self, vec2, Align, Layout, RichText, ScrollArea, Style};
+
+use crate::misc::{Color, Orientation};
 
 use super::widgets_misc::CrossAxisAlignment;
 pub trait Widget {
     fn into_ui(&self, ui: &mut eframe::egui::Ui);
+    fn build(&self) -> Arc<Self>
+    where
+        Self: Clone,
+    {
+        Arc::new(self.clone())
+    }
 }
 
 pub trait ApplyProperties {
@@ -16,7 +24,7 @@ pub trait ApplyProperties {
     }
 }
 
-pub type WidgetArray<'a> = Vec<&'a dyn Widget>;
+pub type WidgetArray = Vec<Arc<dyn Widget>>;
 
 #[derive(Clone)]
 pub struct Text {
@@ -75,13 +83,13 @@ impl Default for TextStyle {
 }
 
 #[derive(Clone)]
-pub struct Row<'a> {
-    children: WidgetArray<'a>,
+pub struct Row {
+    children: WidgetArray,
     cross_axis_alignment: CrossAxisAlignment,
     reversed: bool,
 }
 
-impl<'a> Widget for Row<'a> {
+impl Widget for Row {
     fn into_ui(&self, ui: &mut eframe::egui::Ui) {
         let mut children = self.children.clone();
         if self.reversed {
@@ -103,8 +111,93 @@ impl<'a> Widget for Row<'a> {
     }
 }
 
-impl<'a> Row<'a> {
-    pub fn create(children: WidgetArray<'a>) -> Self {
+impl Row {
+    pub fn create(children: WidgetArray) -> Self {
+        Self {
+            children,
+            cross_axis_alignment: CrossAxisAlignment::Start,
+            reversed: false,
+        }
+    }
+
+    pub fn with_cross_axis_alignment(&mut self, cross_axis_alignment: CrossAxisAlignment) -> Self {
+        self.cross_axis_alignment = cross_axis_alignment;
+
+        self.clone()
+    }
+
+    pub fn with_reversed(&mut self, reversed: bool) -> Self {
+        self.reversed = reversed;
+
+        self.clone()
+    }
+}
+
+#[derive(Clone)]
+pub struct ScrollableArea {
+    child: Arc<dyn Widget>,
+    orientation: Orientation,
+}
+
+impl Widget for ScrollableArea {
+    fn into_ui(&self, ui: &mut eframe::egui::Ui) {
+        match self.orientation {
+            Orientation::Vertical => ScrollArea::vertical().show(ui, |ui| {
+                self.child.into_ui(ui);
+            }),
+            Orientation::Horizontal => ScrollArea::horizontal().show(ui, |ui| {
+                self.child.into_ui(ui);
+            }),
+        };
+    }
+}
+
+impl ScrollableArea {
+    pub fn create(child: Arc<dyn Widget>) -> Self {
+        Self {
+            child,
+            orientation: Orientation::Vertical,
+        }
+    }
+
+    pub fn with_orientation(&mut self, orientation: Orientation) -> Self {
+        self.orientation = orientation;
+
+        self.clone()
+    }
+}
+
+#[derive(Clone)]
+pub struct Column {
+    children: WidgetArray,
+    cross_axis_alignment: CrossAxisAlignment,
+    reversed: bool,
+}
+
+impl<'a> Widget for Column {
+    fn into_ui(&self, ui: &mut eframe::egui::Ui) {
+        let mut children = self.children.clone();
+        if self.reversed {
+            children.reverse();
+        }
+        ui.allocate_ui_with_layout(
+            vec2(10000.0, 0.0),
+            Layout::top_down(match self.cross_axis_alignment {
+                CrossAxisAlignment::Start => Align::TOP,
+                CrossAxisAlignment::End => Align::BOTTOM,
+                CrossAxisAlignment::Center => Align::Center,
+            }),
+            |ui| {
+                for child in children {
+                    child.into_ui(ui);
+                }
+            },
+        );
+    }
+}
+
+impl Column {
+    pub fn create(children: WidgetArray) -> Self {
         Self {
             children,
             cross_axis_alignment: CrossAxisAlignment::Start,

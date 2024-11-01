@@ -5,4 +5,4 @@ edition = "2021"
 
 [dependencies]
 quote = "1.0.37"
-syn = "2.0.85"
+syn = "2.0.86"

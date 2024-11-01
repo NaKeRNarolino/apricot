@@ -3,6 +3,7 @@ name = "apricot"
 version = "0.1.0"
 edition = "2021"
 
+
 [dependencies]
-proc_macro = { path = "./crates/proc_macro" }
+proc_macro = { version = "0.1.0", path = "crates/proc_macro" }
 eframe = "0.29.1"

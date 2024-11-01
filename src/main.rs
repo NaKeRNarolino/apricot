@@ -3,7 +3,6 @@ use core::{
     widgets_misc::CrossAxisAlignment,
 };
 
-use eframe::egui::text;
 use misc::{Color, Vec2};
 pub mod core;
 pub mod misc;
@@ -16,15 +15,15 @@ fn text_style(text: &mut Text) -> Text {
 }
 
 fn main() {
-    core::App {
-        app_name: String::from("App Name"),
-        viewport_size: Vec2 { x: 320.0, y: 240.0 },
-        widgets: vec![&Row::create(vec![
-            &Text::create("is a nice wrapper for egui"),
-            &Text::create("Apricot").apply_properties(text_style),
-        ])
-        .with_cross_axis_alignment(CrossAxisAlignment::End)
-        .with_reversed(true)],
-    }
-    .run();
+    // core::App {
+    //     app_name: String::from("App Name"),
+    //     viewport_size: Vec2 { x: 320.0, y: 240.0 },
+    //     widgets: vec![&Row::create(vec![
+    //         &Text::create("is a nice wrapper for egui"),
+    //         &Text::create("Apricot").apply_properties(text_style),
+    //     ])
+    //     .with_cross_axis_alignment(CrossAxisAlignment::End)
+    //     .with_reversed(true)],
+    // }
+    // .run();
 }

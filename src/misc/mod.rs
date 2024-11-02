@@ -45,3 +45,10 @@ pub enum Orientation {
     Vertical,
     Horizontal,
 }
+
+#[derive(Clone, PartialEq)]
+pub enum OccupyPolicy {
+    Minimal,
+    Full,
+    Custom(f32),
+}

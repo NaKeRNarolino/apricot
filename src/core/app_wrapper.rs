@@ -1,6 +1,6 @@
 use super::{
+    app::App,
     widget::{Widget, WidgetArray},
-    App,
 };
 
 pub struct AppWrapper {

@@ -1,36 +1,40 @@
+use std::sync::Arc;
+use winit::window::Window;
+use crate::core::inner::InnerEngine;
 use crate::misc::Vec2;
 
-use super::app_wrapper::AppWrapper;
-use super::widget::WidgetArray;
-use eframe::egui::{self, widgets, Widget};
+// use super::app_wrapper::AppWrapper;
+use super::context::Context;
+use super::navigation::Navigator;
+// use super::screen::{ScreenArray, ScreensProvider};
+// use super::widget::WidgetArray;
 
 pub struct App {
     app_name: String,
     viewport_size: crate::misc::Vec2,
-    widgets: WidgetArray,
+    inner_engine: InnerEngine
 }
 
 impl App {
-    pub fn run(&self) {
-        let options = eframe::NativeOptions {
-            viewport: egui::ViewportBuilder::default()
-                .with_inner_size([self.viewport_size.x, self.viewport_size.y]),
-            ..Default::default()
-        };
-        let _ = eframe::run_native(
-            &self.app_name,
-            options,
-            Box::new(|cc: &eframe::CreationContext<'_>| {
-                Ok(Box::new(AppWrapper::with_widgets(self.widgets.clone())))
-            }),
-        );
+    pub fn run(self) {
+        self.inner_engine.run();
     }
 
-    pub fn create(app_name: impl Into<String>, viewport_size: Vec2, widgets: WidgetArray) -> Self {
+    pub async fn create(
+        app_name: impl Into<String> + Clone,
+        viewport_size: Vec2,
+        // screens: Arc<ScreensProvider>,
+        // pages: Vec<P>,
+        // home: P,
+    ) -> Self
+    {
         Self {
-            app_name: app_name.into(),
+            app_name: app_name.clone().into(),
             viewport_size,
-            widgets,
+            inner_engine: InnerEngine::new(
+                viewport_size,
+                app_name.into()
+            ).await
         }
     }
 }

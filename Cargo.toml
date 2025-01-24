@@ -5,5 +5,12 @@ edition = "2021"
 
 
 [dependencies]
-proc_macro = { version = "0.1.0", path = "crates/proc_macro" }
-eframe = "0.29.1"
+#eframe = "0.29.1"
+hello-world = { path = "examples/hello-world", version = "0.1.0" }
+proc_macro = { path = "crates/proc_macro", version = "*" }
+derive_setters = "0.1.6"
+lyon = "1.0.1"
+wgpu = "24.0.1"
+winit = "0.29"
+vello = "0.4.0"
+tokio = { version = "1.43.0", features = ["rt", "rt-multi-thread", "macros"] }

@@ -1,1 +1,1 @@
-# A simple, Flutter inspired `egui` wrapper
+# A standalone Rust app framework
